@@ -1,0 +1,12 @@
+[package]
+name = "gcode-io"
+version = "0.1.0"
+edition = "2024"
+authors = ["Paul8711gamezz <support@Paul8711gamezz.org>"]
+description = "A fast G-code / RS-274 generator and parser for Rust"
+license = "MIT"
+repository = "https://github.com/Paulprojects8711/gcode-io"
+readme = "README.md"
+keywords = ["gcode", "cnc", "3d-printing", "parser"]
+
+[dependencies]
