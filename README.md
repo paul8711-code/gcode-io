@@ -1,2 +1,2 @@
 # gcode-io
-A fast G-code / RS-274 generator and parser for Rust
+Fast G-code / RS-274 generator and parser library for Rust
