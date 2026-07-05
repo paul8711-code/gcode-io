@@ -91,8 +91,6 @@ impl MeshBuilder {
     /// Panics if any of the indices provided in [`add_triangle`](MeshBuilder::add_triangle) are out of
     /// bounds of the vertex list.
     pub fn build(self) -> Mesh {
-        use crate::math::{cross_product, subtract};
-
         let mut faces = Vec::new();
 
         for [i_a, i_b, i_c] in self.indices {
@@ -106,7 +104,7 @@ impl MeshBuilder {
             // Ny = Uz * Vx - Ux * Vz
             // Nz = Ux * Vy - Uy * Vx
 
-            let normal = cross_product(subtract(b, a), subtract(c, a));
+            let normal = Self::cross_product(Self::subtract(b, a), Self::subtract(c, a));
 
             faces.push(Triangle {
                 indices: [i_a, i_b, i_c],
@@ -118,5 +116,17 @@ impl MeshBuilder {
             vertices: self.vertices,
             faces,
         }
+    }
+
+    fn subtract(b: [f64; 3], a: [f64; 3]) -> [f64; 3] {
+        [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
+    }
+
+    fn cross_product(u: [f64; 3], v: [f64; 3]) -> [f64; 3] {
+        [
+            u[1] * v[2] - u[2] * v[1],
+            u[2] * v[0] - u[0] * v[2],
+            u[0] * v[1] - u[1] - v[0],
+        ]
     }
 }

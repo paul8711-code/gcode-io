@@ -1,4 +1,3 @@
-mod math;
 pub mod mesh;
 use mesh::{Mesh, Point3D};
 
