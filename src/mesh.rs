@@ -1,7 +1,48 @@
+use std::ops::Sub;
+
 /// A coordinate representing a location in 3D space.
-///
-/// Stored as an array of `[x, y, z]`.
-pub type Point3D = [f64; 3];
+#[derive(Copy, Clone)]
+pub struct Point3D {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+
+impl Point3D {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { x, y, z }
+    }
+
+    fn cross_product(&self, other: Self) -> Self {
+        Self {
+            x: self.y * other.z - self.z * other.y,
+            y: self.z * other.x - self.x * other.z,
+            z: self.x * other.y - self.y * other.x,
+        }
+    }
+}
+
+impl Sub for Point3D {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+}
+
+impl From<[f64; 3]> for Point3D {
+    fn from(value: [f64; 3]) -> Self {
+        Self {
+            x: value[0],
+            y: value[1],
+            z: value[2],
+        }
+    }
+}
 
 /// A face of a 3D mesh defined by vertex indexing and a surface normal.
 pub struct Triangle {
@@ -66,7 +107,7 @@ impl MeshBuilder {
     /// The vertex is assigned an index based on the order it was added,
     /// starting at 0.
     pub fn add_vertex(mut self, x: f64, y: f64, z: f64) -> Self {
-        self.vertices.push([x, y, z]);
+        self.vertices.push(Point3D::new(x, y, z));
         self
     }
 
@@ -104,7 +145,7 @@ impl MeshBuilder {
             // Ny = Uz * Vx - Ux * Vz
             // Nz = Ux * Vy - Uy * Vx
 
-            let normal = Self::cross_product(Self::subtract(b, a), Self::subtract(c, a));
+            let normal = (b - a).cross_product(c - a);
 
             faces.push(Triangle {
                 indices: [i_a, i_b, i_c],
@@ -116,17 +157,5 @@ impl MeshBuilder {
             vertices: self.vertices,
             faces,
         }
-    }
-
-    fn subtract(b: [f64; 3], a: [f64; 3]) -> [f64; 3] {
-        [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
-    }
-
-    fn cross_product(u: [f64; 3], v: [f64; 3]) -> [f64; 3] {
-        [
-            u[1] * v[2] - u[2] * v[1],
-            u[2] * v[0] - u[0] * v[2],
-            u[0] * v[1] - u[1] - v[0],
-        ]
     }
 }
